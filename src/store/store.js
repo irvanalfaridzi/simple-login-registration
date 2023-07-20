@@ -11,13 +11,28 @@ export const store = new Vuex.Store({
     state : {
         user: JSON.parse(localStorage.getItem('user')),
         users: JSON.parse(localStorage.getItem('users')),
+        isLoading: false
     },
     mutations: {
         resgisterSuccess(state, user){
            state.user = user;
+           state.isLoading = false;
         },
         loginSuccess(state, user){
             state.user = user;
+            state.isLoading = false;
+        },
+        loginFailure(state){
+            state.isLoading = false;
+        },
+        loginProcess(state){
+            state.isLoading = true;
+        },
+        registerProcess(state){
+            state.isLoading = true;
+        },
+        registerExist(state){
+            state.isLoading = false;
         },
         getAllUserSuccess(state, users){
             state.users = users;
@@ -25,6 +40,8 @@ export const store = new Vuex.Store({
     },
     actions: {
         register(context, user) {
+            context.commit('registerProcess');
+            
             // check user
             this._vm.$http.get(apiUrl + 'users.json').then(function(users) {
                 return users.json();
@@ -34,7 +51,6 @@ export const store = new Vuex.Store({
                     if (x.email == user.email ) {
                         context.commit('registerExist');
                         setTimeout(() => {
-                            // display success message after route change completes
                             alert('Email already registered');
                         });
                         return true;
@@ -45,35 +61,40 @@ export const store = new Vuex.Store({
                 if (!exist) {
                     // regis the user
                     this.$http.post(apiUrl + 'users.json', user).then(function(user) {
-                        console.log(user);
-                        context.commit('resgisterSuccess', user);
-                        router.push('/login');
                         setTimeout(() => {
-                            // display success message after route change completes
-                            alert('Registration successful');
-                        })
+                            console.log(user);
+                            context.commit('resgisterSuccess', user);
+                            router.push('/login');
+                            setTimeout(() => {
+                                alert('Registration successful');
+                            })
+                        }, 2000); // delay effect
                     });
                 }
              }); 
         },
         login(context, auth) {
+            context.commit('loginProcess');
             this._vm.$http.get(apiUrl + 'users.json').then(function(users) {
                return users.json();
             }).then(function(users) {
                 for (let key in users) {
                     let x = users[key];
                     if (x.email == auth.email && x.password == auth.password) {
-                        localStorage.setItem('user', JSON.stringify(x));
-                        context.commit('loginSuccess', x);
-                        router.push('/home');
                         setTimeout(() => {
-                            // display success message after route change completes
-                            alert('Login successful, Hi ' + x.firstName + '!');
-                        });
+                            localStorage.setItem('user', JSON.stringify(x));
+                            context.commit('loginSuccess', x);
+                            router.push('/home');
+                            setTimeout(() => {
+                                // display success message after route change completes
+                                alert('Login successful, Hi ' + x.firstName + '!');
+                            }, 500);
+                        }, 1000);
                         return;
                     }
                 }
 
+                context.commit('loginFailure');
                 setTimeout(() => {
                     // display success message after route change completes
                     alert('Username or password is incorrect');
