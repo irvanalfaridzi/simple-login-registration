@@ -22,8 +22,15 @@
                 <h4 class="font-bold pb-2 mt-12 border-b border-slate-300">List of users</h4>
                 <div class="mt-4">
                     <ul>
-                        <li class="tracking-wider cursor-pointer h-10 bg-gray-700 rounded mb-3 pl-3 flex items-center text-slate-200 hover:shadow-2xl hover:bg-gray-500" v-for="user in users" :key="user.id" v-on:click="onUser(user)" >
-                            {{user.firstName + ' ' + user.lastName}}
+                        <li class="h-10 bg-gray-700 rounded mb-3 px-3 flex justify-between items-center text-slate-200" v-for="user in users" :key="user.id">
+                            <p v-on:click="onUser(user)" class="tracking-wider cursor-pointer hover:text-xl">{{user.firstName + ' ' + user.lastName}}</p>
+                            <div>
+                                <button :disabled="isLoading" v-on:click="onRemove(user)" class="mr-2 rounded-full py-1 px-3 text-xs font-bold text-red-400 border-red-400 border-2 hover:bg-red-400 hover:text-gray-700 transition ease-out duration-500">
+                                    <p v-show="!isLoading">remove</p>
+                                    <p v-show="isLoading">loading...</p>
+                                </button>
+                                <button v-on:click="onEdit(user)" class="rounded-full py-1 px-3 text-xs font-bold text-white border-white border-2 hover:bg-white hover:text-gray-700 transition ease-out duration-500">Edit</button>
+                            </div>
                         </li>
                     </ul>
                 </div>
@@ -39,17 +46,21 @@ import { mapActions, mapState } from 'vuex'
         computed: {
             ...mapState({
                 account: state => state.user,
-                users: state => state.users
+                users: state => state.users,
+                isLoading: state => state.isLoading
             })
         },
         created () {
             this.getAllUser();
         },
         methods:{
-            ...mapActions(['logout', 'getAllUser']),
+            ...mapActions(['logout', 'getAllUser', 'removeUser']),
             onUser(user){
                 alert('halo ' + user.firstName);
             },
+            onRemove(user){
+                this.removeUser(user);
+            }
         },
     }
 </script>

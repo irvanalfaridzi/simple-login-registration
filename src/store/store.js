@@ -18,6 +18,9 @@ export const store = new Vuex.Store({
            state.user = user;
            state.isLoading = false;
         },
+        removeSuccess(state){
+            state.isLoading = false;
+        },
         loginSuccess(state, user){
             state.user = user;
             state.isLoading = false;
@@ -30,6 +33,12 @@ export const store = new Vuex.Store({
         },
         registerProcess(state){
             state.isLoading = true;
+        },
+        removeProcess(state){
+            state.isLoading = true;
+        },
+        removeFailure(state){
+            state.isLoading = false;
         },
         registerExist(state){
             state.isLoading = false;
@@ -110,7 +119,7 @@ export const store = new Vuex.Store({
             this._vm.$http.get(apiUrl + 'users.json').then(function(users) {
                return users.json();
              }).then(function(users){
-                var usersData = [];
+                let usersData = [];
                 for (let key in users) {
                     users[key].id = key;
                     usersData.push(users[key]);
@@ -120,6 +129,27 @@ export const store = new Vuex.Store({
                 context.commit('getAllUserSuccess', usersData);
                 return usersData;
              });  
+        },
+        removeUser(context, user){
+            context.commit('removeProcess');
+            if (user.email == context.state.user.email) {
+                setTimeout(() => {
+                    context.commit('removeFailure');
+                    alert('Can\'t remove active user!');
+                }, 500);
+                return;
+            }
+
+            this._vm.$http.delete(apiUrl + 'users/' + user.id + '.json').then(function(user) {
+                setTimeout(() => {
+                    context.commit('removeSuccess', user);
+                    setTimeout(() => {
+                        alert('Remove successful');
+                    })
+                }); // delay effect
+            }).then(function() { 
+                context.dispatch('getAllUser');
+            });
         }
     }
 })
