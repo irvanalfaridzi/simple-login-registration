@@ -13,7 +13,11 @@
                 <input class="mb-5 px-2 py-2" v-model="auth.email" type="email" name="email" id="email" placeholder="Enter your email" required>
                 <label class="mb-1" for="password">Password</label>
                 <input class="px-2 py-2" v-model="auth.password" type="password" name="password" id="password" placeholder="Enter your password" required>
-                <router-link class="flex justify-end mt-2 hover:underline" to="/login">Forgot Password?</router-link>
+                <div class="flex justify-between">
+                    <div></div>
+                    <a class="w-max mt-2 hover:underline tracking-wider cursor-pointer" v-on:click="onForgetPass">Forgot Password?</a>
+                </div>
+                
                 
                 <button v-bind:disabled="isLoading" class="mt-5 bg-slate-900 text-white px-5 py-2 rounded hover:shadow-xl text-center flex justify-center">
                     <p v-show="!isLoading">Login now</p>
@@ -55,6 +59,9 @@ import { mapActions, mapState } from 'vuex'
         },
         methods: {
             ...mapActions(['login']),
+            onForgetPass(){
+                alert('Coming Soon...');
+            }
         }
     }
 </script>

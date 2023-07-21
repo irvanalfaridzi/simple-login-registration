@@ -29,7 +29,7 @@
                                     <p v-show="!isLoading">remove</p>
                                     <p v-show="isLoading">loading...</p>
                                 </button>
-                                <button v-on:click="onEdit(user)" class="rounded-full py-1 px-3 text-xs font-bold text-white border-white border-2 hover:bg-white hover:text-gray-700 transition ease-out duration-500">Edit</button>
+                                <button v-on:click="onEdit" class="rounded-full py-1 px-3 text-xs font-bold text-white border-white border-2 hover:bg-white hover:text-gray-700 transition ease-out duration-500">Edit</button>
                             </div>
                         </li>
                     </ul>
@@ -60,6 +60,9 @@ import { mapActions, mapState } from 'vuex'
             },
             onRemove(user){
                 this.removeUser(user);
+            },
+            onEdit(){
+                alert('Coming Soon...');
             }
         },
     }
