@@ -13,8 +13,9 @@ To see a demo go to https://simple-login-registration.vercel.app/login
 ## Features
 - Login
 - Registration
-- Update data user (coming soon)
-- Remove data user 
+- Update data user
+- Remove data user
+- Forget password (coming soon) 
 
 ## Project setup
 ```

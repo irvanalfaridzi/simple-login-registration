@@ -1,15 +1,10 @@
 <template>
-    <div id="home-view" class="bg-slate-200 h-screen w-screen text-gray-700 md:grid md:grid-cols-3">
-        <div id="left" class="md:col-span-1 flex justify-center md:justify-end bg-slate-300 md:pt-1">
-            <a href="/" class="flex py-3 md:pt-8 md:h-10 items-center mr-4">
-                <img class="w-10 h-10 mr-2" src="../assets/img/Logo 2.png" alt="">
-                <p>Alfaridzi</p>
-            </a>
-        </div>
-        <div id="right" class="px-10 md:px-16 py-6 md:col-span-2">
+    <BaseView>
+        <div slot="right-section">
             <div class="flex justify-center md:justify-end">
                 <a v-show="account.value" href="#" class="rounded-full py-2 px-3 uppercase text-xs font-bold tracking-wider cursor-pointer text-gray-700 border-gray-700 md:border-2 hover:bg-gray-700 hover:text-white transition ease-out duration-500">Log in</a>
                 <a v-show="account.value" href="#" class="rounded-full py-2 px-3 uppercase text-xs font-bold tracking-wider cursor-pointer text-gray-700 ml-2 border-gray-700 md:border-2 hover:bg-gray-700 hover:text-white transition ease-out duration-500">Sign up</a>
+                <router-link to="/edit" v-show="!account.value" href="#" class="rounded-full py-2 px-3 uppercase text-xs font-bold tracking-wider cursor-pointer text-gray-700 md:ml-2 border-gray-700 md:border-2 hover:bg-gray-700 hover:text-white transition ease-out duration-500">Edit</router-link>
                 <a v-on:click="logout" v-show="!account.value" href="#" class="rounded-full py-2 px-3 uppercase text-xs font-bold tracking-wider cursor-pointer text-gray-700 md:ml-2 border-gray-700 md:border-2 hover:bg-gray-700 hover:text-white transition ease-out duration-500">Log out</a>
             </div>
 
@@ -29,20 +24,23 @@
                                     <p v-show="!isLoading">remove</p>
                                     <p v-show="isLoading">loading...</p>
                                 </button>
-                                <button v-on:click="onEdit" class="rounded-full py-1 px-3 text-xs font-bold text-white border-white border-2 hover:bg-white hover:text-gray-700 transition ease-out duration-500">Edit</button>
                             </div>
                         </li>
                     </ul>
                 </div>
             </div>
         </div>
-    </div>
+    </BaseView>
 </template>
 
 <script>
 import { mapActions, mapState } from 'vuex'
+import BaseView from './BaseView.vue'
     export default {
         name: "home-view",
+        components: {
+            BaseView
+        },
         computed: {
             ...mapState({
                 account: state => state.user,
@@ -60,9 +58,6 @@ import { mapActions, mapState } from 'vuex'
             },
             onRemove(user){
                 this.removeUser(user);
-            },
-            onEdit(){
-                alert('Coming Soon...');
             }
         },
     }

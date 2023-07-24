@@ -21,6 +21,10 @@ export const store = new Vuex.Store({
         removeSuccess(state){
             state.isLoading = false;
         },
+        updateSuccess(state, user){
+            state.user = user;
+            state.isLoading = false;
+        },
         loginSuccess(state, user){
             state.user = user;
             state.isLoading = false;
@@ -35,6 +39,9 @@ export const store = new Vuex.Store({
             state.isLoading = true;
         },
         removeProcess(state){
+            state.isLoading = true;
+        },
+        updateProcess(state){
             state.isLoading = true;
         },
         removeFailure(state){
@@ -89,6 +96,7 @@ export const store = new Vuex.Store({
             }).then(function(users) {
                 for (let key in users) {
                     let x = users[key];
+                    x.id = key;
                     if (x.email == auth.email && x.password == auth.password) {
                         setTimeout(() => {
                             localStorage.setItem('user', JSON.stringify(x));
@@ -150,6 +158,30 @@ export const store = new Vuex.Store({
             }).then(function() { 
                 context.dispatch('getAllUser');
             });
+        },
+        updateUser(context, user){
+            context.commit('updateProcess');
+            let data = {
+                'firstName': user.firstName,
+                'lastName': user.lastName,
+                'password': user.password,
+            }
+
+            this._vm.$http.patch(apiUrl + 'users/' + user.id + '.json', data).then(function(result) {
+                setTimeout(() => {
+                    // update data to local state
+                    user.firstName = result.body.firstName;
+                    user.lastName = result.body.lastName;
+                    user.password = result.body.password;
+
+                    localStorage.setItem('user', JSON.stringify(user));
+                    context.commit('updateSuccess', user);
+                    router.push('/');
+                    setTimeout(() => {
+                        alert('Update successful');
+                    })
+                }); // delay effect
+            })
         }
     }
 })
