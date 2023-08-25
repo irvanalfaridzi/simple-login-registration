@@ -53,6 +53,9 @@ export const store = new Vuex.Store({
         registerFailure(state){
             state.isLoading = false;
         },
+        updateFailure(state){
+            state.isLoading = false;
+        },
         getAllUserSuccess(state, users){
             state.users = users;
         }
@@ -247,6 +250,21 @@ export const store = new Vuex.Store({
                         alert('Update successful');
                     })
                 }); // delay effect
+            },  response => {
+                // error
+                if(response.status == 401) {
+                    context.commit('updateFailure');
+                    setTimeout(() => {
+                        // display success message after route change completes
+                        alert('Under maintenance, please try again later');
+                    });
+                } else{
+                     context.commit('updateFailure');
+                    setTimeout(() => {
+                        // display success message after route change completes
+                        alert('Something went wrong, report to the admin');
+                    });
+                }
             })
         }
     }
