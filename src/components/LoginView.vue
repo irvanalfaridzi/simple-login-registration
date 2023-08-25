@@ -10,9 +10,11 @@
             </div>
             <form @submit.prevent="login(auth)" id="form" class="flex flex-col mt-5">
                 <label class="mb-1" for="email">Email</label>
-                <input class="mb-5 px-2 py-2" v-model="auth.email" type="email" name="email" id="email" placeholder="Enter your email" required>
+                <input class="px-2 py-2" v-model="auth.email" type="email" name="email" id="email" placeholder="Enter your email" required>
+                <p class="mb-5 mt-1 text-gray-400 text-xs">email: testuser@test.user</p>
                 <label class="mb-1" for="password">Password</label>
                 <input class="px-2 py-2" v-model="auth.password" type="password" name="password" id="password" placeholder="Enter your password" required>
+                <p class="mb-5 mt-1 text-gray-400 text-xs">pass: 123123</p>
                 <div class="flex justify-between">
                     <div></div>
                     <a class="w-max mt-2 hover:underline tracking-wider cursor-pointer" v-on:click="onForgetPass">Forgot Password?</a>
