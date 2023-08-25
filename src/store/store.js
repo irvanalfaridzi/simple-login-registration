@@ -92,7 +92,19 @@ export const store = new Vuex.Store({
         login(context, auth) {
             context.commit('loginProcess');
             this._vm.$http.get(apiUrl + 'users.json').then(function(users) {
+                // success
                return users.json();
+            }, response => {
+                // error
+                if(response.status == 401) {
+                    context.commit('loginFailure');
+                    setTimeout(() => {
+                        // display success message after route change completes
+                        alert('Username or password is incorrect');
+                    });
+                } else{
+                    return;
+                }
             }).then(function(users) {
                 for (let key in users) {
                     let x = users[key];
@@ -133,7 +145,6 @@ export const store = new Vuex.Store({
                     usersData.push(users[key]);
                 }
                 localStorage.setItem('users', JSON.stringify(usersData));
-                console.log(usersData);
                 context.commit('getAllUserSuccess', usersData);
                 return usersData;
              });  
@@ -148,16 +159,38 @@ export const store = new Vuex.Store({
                 return;
             }
 
-            this._vm.$http.delete(apiUrl + 'users/' + user.id + '.json').then(function(user) {
-                setTimeout(() => {
-                    context.commit('removeSuccess', user);
+            try {
+                this._vm.$http.delete(apiUrl + 'users/' + user.id + '.json').then(function(user) {
                     setTimeout(() => {
-                        alert('Remove successful');
-                    })
-                }); // delay effect
-            }).then(function() { 
-                context.dispatch('getAllUser');
-            });
+                        context.commit('removeSuccess', user);
+                        setTimeout(() => {
+                            alert('Remove successful');
+                        })
+                    }); // delay effect
+                }, response => {
+                    // error
+                    if(response.status == 401) {
+                        context.commit('removeFailure');
+                        setTimeout(() => {
+                            // display success message after route change completes
+                            alert('Under maintenance, please try again later');
+                        });
+                    } else{
+                         context.commit('removeFailure');
+                        setTimeout(() => {
+                            // display success message after route change completes
+                            alert('Something went wrong, report to the admin');
+                        });
+                    }
+                } ).then(function() { 
+                    context.dispatch('getAllUser');
+                });
+            } catch (error) {
+                setTimeout(() => {
+                    context.commit('removeFailure');
+                    alert('Something went wrong, report to the admin');
+                }, 500);
+            }
         },
         updateUser(context, user){
             context.commit('updateProcess');
