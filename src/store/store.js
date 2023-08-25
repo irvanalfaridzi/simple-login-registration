@@ -50,6 +50,9 @@ export const store = new Vuex.Store({
         registerExist(state){
             state.isLoading = false;
         },
+        registerFailure(state){
+            state.isLoading = false;
+        },
         getAllUserSuccess(state, users){
             state.users = users;
         }
@@ -61,7 +64,22 @@ export const store = new Vuex.Store({
             // check user
             this._vm.$http.get(apiUrl + 'users.json').then(function(users) {
                 return users.json();
-             }).then(function(users){
+             },  response => {
+                // error
+                if(response.status == 401) {
+                    context.commit('registerFailure');
+                    setTimeout(() => {
+                        // display success message after route change completes
+                        alert('Under maintenance, please try again later');
+                    });
+                } else{
+                    context.commit('registerFailure');
+                    setTimeout(() => {
+                        // display success message after route change completes
+                        alert('Please check again your input');
+                    });
+                }
+            }).then(function(users){
                 for (let key in users) {
                     let x = users[key];
                     if (x.email == user.email ) {
@@ -85,6 +103,21 @@ export const store = new Vuex.Store({
                                 alert('Registration successful');
                             })
                         }, 2000); // delay effect
+                    },   response => {
+                        // error
+                        if(response.status == 401) {
+                            context.commit('registerFailure');
+                            setTimeout(() => {
+                                // display success message after route change completes
+                                alert('Under maintenance, please try again later');
+                            });
+                        } else{
+                            context.commit('registerFailure');
+                            setTimeout(() => {
+                                // display success message after route change completes
+                                alert('Please check again your input');
+                            });
+                        }
                     });
                 }
              }); 
